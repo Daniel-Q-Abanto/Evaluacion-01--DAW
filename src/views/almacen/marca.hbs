@@ -1,0 +1,78 @@
+<div class="container" style="margin-top: 70px;">
+    {{#if mensaje}}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{mensaje}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {{/if}}
+
+    <h2>Marcas</h2>
+    <form id="marcaForm" action="/marca" method="POST">
+        <div class="mb-3">
+            <label for="nombreMarca" class="form-label">Nombre de la Marca</label>
+            <input type="text" class="form-control" id="nombreMarca" name="nombreMarca" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Agregar Marca</button>
+    </form>
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each marcas}}
+            <tr>
+                <td>{{this.id}}</td>
+                <td>{{this.nombre}}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning" onclick="editarMarca({{this.id}}, '{{this.nombre}}')">Editar</button>
+                    <a href="/marca/eliminar/{{this.id}}" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar esta Marca?')">Eliminar</a>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="editarMarcaModal" tabindex="-1" aria-labelledby="editarMarcaModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editarMarcaModalLabel">Editar Marca</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="editarMarcaForm" method="POST">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="editNombreMarca" class="form-label">Nombre de la Marca</label>
+            <input type="text" class="form-control" id="editNombreMarca" name="nombreMarca" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function editarMarca(id, nombre) {
+    document.getElementById('editNombreMarca').value = nombre;
+    document.getElementById('editarMarcaForm').action = `/marca/editar/${id}`;
+    var myModal = new bootstrap.Modal(document.getElementById('editarMarcaModal'));
+    myModal.show();
+}
+
+setTimeout(function() {
+    var alert = document.querySelector('.alert');
+    if (alert) {
+        var bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+    }
+}, 3000);
+</script>
